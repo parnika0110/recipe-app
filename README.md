@@ -1,216 +1,203 @@
-# KhanaKreation - AI-Powered Recipe Generator 🍳
+# KhanaKreation
 
-A modern, responsive web application that uses AI to generate personalized recipe suggestions based on available ingredients. Built with Next.js 16, TypeScript, Tailwind CSS, and OpenAI's GPT-4.
+KhanaKreation is a full-stack recipe application that helps users discover personalized recipes based on the ingredients they have available.
 
-## 🎯 Features
+Built with Next.js and React, the application combines recipe generation with authentication, persistent data storage, saved recipes, ratings, and comments in a complete full-stack experience.
 
-### Core Features
+## Features
 
-- **AI Recipe Generation** - Input ingredients and get creative recipe suggestions
-- **Recipe Images** - AI-generated beautiful food images for each recipe
-- **Smart Ingredient Input** - Easy selector with dietary preferences and cuisine options
-- **Save Favorites** - Save recipes to view later
-- **Recipe Details** - Full recipes with ingredients, instructions, timers, nutrition
+### Recipe Generation
+- Generate personalized recipes from available ingredients
+- Set dietary and cuisine preferences
+- View detailed ingredients and cooking instructions
+- Access preparation and cooking information
+- View nutritional information when available
 
-### Social Features
+### User Authentication
+- User registration and sign-in
+- Secure password hashing using bcrypt
+- Session management with NextAuth
+- User-specific recipe interactions
 
-- **Rating System** - Rate recipes on a 5-star scale
-- **Comments** - Share tips and feedback on recipes
+### Recipe Management
+- View detailed recipe pages
+- Save favorite recipes
+- Access previously saved recipes
+- Store recipe and ingredient information
+- Maintain user-specific saved recipe collections
+
+### Ratings and Comments
+- Rate recipes on a 5-star scale
+- Add comments to recipes
+- Store ratings and comments for individual users
 
 ### User Experience
+- Responsive interface
+- Smooth animations using Framer Motion
+- Loading and error states
+- Component-based user interface
 
-- **Responsive Design** - Perfect on mobile, tablet, and desktop
-- **Smooth Animations** - Framer Motion for fluid interactions
-- **Loading States** - Clear feedback during generation
-- **Error Handling** - Graceful error messages
+## Tech Stack
 
-## 🛠 Tech Stack
+### Frontend
+- Next.js 16
+- React 19
+- JavaScript / JSX
+- Tailwind CSS
+- Framer Motion
 
-- **Frontend**: React 19, Next.js 16 (App Router), TypeScript
-- **Styling**: Tailwind CSS, Framer Motion
-- **Backend**: Next.js API Routes
-- **AI**: OpenAI (GPT-4 + DALL-E 3)
-- **Database**: SQLite with Prisma ORM
-- **Icons**: Lucide React
+### Backend
+- Next.js API Routes
+- NextAuth
+- bcrypt.js
 
-## 🚀 Quick Start
+### Database
+- SQLite
+- Prisma ORM
+
+### Additional Technologies
+- Generative AI APIs
+- Axios
+- Zod
+- Lucide React
+- jsPDF
+- html2canvas
+
+## Project Structure
+
+```text
+recipe-app/
+├── prisma/
+│   └── schema.prisma
+│
+├── public/
+│
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   └── recipes/
+│   │   ├── auth/
+│   │   │   ├── signin/
+│   │   │   └── signup/
+│   │   ├── recipes/
+│   │   ├── saved/
+│   │   ├── layout.jsx
+│   │   └── page.jsx
+│   │
+│   ├── components/
+│   │   ├── CommentSection.jsx
+│   │   ├── IngredientInput.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── RatingComponent.jsx
+│   │   ├── RecipeCard.jsx
+│   │   ├── SaveButton.jsx
+│   │   └── SessionWrapper.jsx
+│   │
+│   └── lib/
+│       ├── db.js
+│       └── recipe-generator.js
+│
+├── package.json
+└── README.md
+```
+
+## API Routes
+
+The application uses Next.js API routes for authentication and recipe operations.
+
+```text
+POST   /api/auth/signup
+       /api/auth/[...nextauth]
+
+POST   /api/recipes/generate
+POST   /api/recipes/save
+GET    /api/recipes/saved
+POST   /api/recipes/[id]/rate
+GET    /api/recipes/[id]/comments
+POST   /api/recipes/[id]/comments
+```
+
+## Database Design
+
+The application uses Prisma ORM with SQLite for persistent data storage.
+
+The database contains models for:
+
+- User
+- Recipe
+- Ingredient
+- SavedRecipe
+- Rating
+- Comment
+
+Relationships between these models allow users to maintain their own saved recipes, ratings, and comments.
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- OpenAI API key
-- npm or yarn
+Make sure Node.js and npm are installed on your system.
 
-### Installation
+### 1. Clone the Repository
 
-1. **Install Dependencies**
+```bash
+git clone https://github.com/parnika0110/recipe-app.git
+cd recipe-app
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-2. **Create .env.local**
+### 3. Configure Environment Variables
 
-```env
-NEXT_PUBLIC_OPENAI_API_KEY=your_openai_key
-OPENAI_API_KEY=your_openai_key
-DATABASE_URL=file:./prisma/dev.db
-NEXTAUTH_SECRET=your_secret_key
-NEXTAUTH_URL=http://localhost:3000
-```
+Create a `.env.local` file in the project root and configure the required environment variables for:
 
-3. **Initialize Database**
+- Database connection
+- Authentication
+- Recipe generation service
 
-```bash
-$env:DATABASE_URL="file:./prisma/dev.db"
-npx prisma migrate dev --name init
-```
+Sensitive credentials and API keys should never be committed to version control.
 
-4. **Start Development Server**
+### 4. Initialize Prisma
 
 ```bash
-npx next dev --port 3000
+npx prisma generate
+npx prisma migrate dev
 ```
 
-5. **Visit** http://localhost:3000
-
-## 📁 Project Structure
-
-```
-src/
-├── app/
-│   ├── api/recipes/          # API endpoints for recipe operations
-│   ├── recipes/[id]/         # Recipe detail page
-│   ├── saved/                # Saved recipes page
-│   ├── page.tsx              # Home page
-│   ├── layout.tsx            # Root layout
-│   └── globals.css           # Global styles
-├── components/
-│   ├── Navbar.tsx            # Navigation bar
-│   ├── IngredientInput.tsx    # Ingredient input form
-│   ├── RecipeCard.tsx         # Recipe card component
-│   ├── SaveButton.tsx         # Save recipe button
-│   ├── RatingComponent.tsx    # Rating system
-│   └── CommentSection.tsx     # Comments section
-├── lib/
-│   ├── recipe-generator.ts    # AI recipe generation
-│   └── db.ts                  # Prisma client
-prisma/
-├── schema.prisma              # Database schema
-└── migrations/                # Database migrations
-```
-
-## 🔑 Key API Endpoints
-
-**POST /api/recipes/generate**
-
-- Generate recipes from ingredients
-
-**POST /api/recipes/save**
-
-- Save a recipe for later
-
-**GET /api/recipes/saved**
-
-- Get all saved recipes
-
-**POST /api/recipes/[id]/rate**
-
-- Rate a recipe
-
-**GET/POST /api/recipes/[id]/comments**
-
-- Get or post comments
-
-## 🎨 How to Use
-
-1. **Add Ingredients** - Type ingredients and click add
-2. **Set Preferences** - Choose dietary restrictions and cuisine
-3. **Generate** - Click "Generate Recipes" button
-4. **View Recipe** - Click recipe card for full details
-5. **Save** - Click heart icon to save to favorites
-6. **Rate & Comment** - Leave feedback on recipe pages
-
-## 🚀 Production Build
+### 5. Run the Application
 
 ```bash
-npm run build
-npm start
+npm run dev
 ```
 
-## 📦 Deployment Options
+Open the local URL displayed by Next.js in your browser.
 
-- **Vercel** (Recommended) - `vercel deploy`
-- **Railway** - Connect repo and deploy
-- **Netlify** - Connect repo and deploy
-- **Docker** - Use provided Dockerfile
+## Security
 
-## 🌟 Features Highlights
+- Environment variables are excluded from version control
+- Passwords are hashed before storage
+- Authentication is handled using NextAuth
+- User-specific operations are associated with authenticated accounts
+- Sensitive credentials are kept outside the source code
 
-- ✅ Beautiful, modern UI with Tailwind CSS
-- ✅ Smooth animations and transitions
-- ✅ Mobile-first responsive design
-- ✅ AI-powered recipe generation
-- ✅ Recipe image generation
-- ✅ Save favorites functionality
-- ✅ Rating and comment system
-- ✅ Nutritional information
-- ✅ Scalable ingredient amounts
-- ✅ Error handling and loading states
+## Future Improvements
 
-## 🧪 Testing
+- Advanced recipe search and filtering
+- More dietary and cuisine preferences
+- Improved recipe personalization
+- Enhanced user profiles
+- Improved mobile experience
+- Public deployment
 
-```bash
-npm run lint     # ESLint check
-npm run build    # Production build
-npm start        # Production server
-```
+## Project Status
 
-## 📝 Environment Variables
+Actively being improved and maintained.
 
-| Variable                   | Required | Description                  |
-| -------------------------- | -------- | ---------------------------- |
-| NEXT_PUBLIC_OPENAI_API_KEY | Yes      | OpenAI API key (public)      |
-| OPENAI_API_KEY             | Yes      | OpenAI API key (server)      |
-| DATABASE_URL               | Yes      | SQLite database URL          |
-| NEXTAUTH_SECRET            | Yes      | NextAuth secret key          |
-| NEXTAUTH_URL               | No       | App URL (default: localhost) |
+## Developed By
 
-## 🐛 Troubleshooting
-
-**Recipe generation fails**
-
-- Check OpenAI API key
-- Verify API credits available
-- Check internet connection
-
-**Database errors**
-
-- Run `npx prisma generate`
-- Delete `.next` folder
-- Run migrations again
-
-**Styling issues**
-
-- Clear cache: `rm -rf .next node_modules`
-- Reinstall: `npm install`
-
-## 📚 Resources
-
-- [Next.js Docs](https://nextjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Prisma](https://www.prisma.io)
-- [OpenAI API](https://platform.openai.com/docs)
-
-## 📄 License
-
-MIT License - Free for personal and commercial use
-
-## 👨‍💻 Built By
-
-Created as a full-stack AI recipe generator project with modern web technologies.
-
----
-
-**Transform your kitchen into a gourmet restaurant with AI! 🚀**
+Parnika S M
