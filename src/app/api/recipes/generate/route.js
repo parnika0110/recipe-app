@@ -63,10 +63,16 @@ export async function POST(request) {
       );
     }
 
-    // Generate images for all recipes
+    // Generate images for all recipes (non-blocking — recipe succeeds even if image fails)
     const recipesWithImages = await Promise.all(
       recipes.map(async (recipe) => {
-        const imageUrl = await generateRecipeImage(recipe.title);
+        let imageUrl = null;
+        try {
+          imageUrl = await generateRecipeImage(recipe.title);
+        } catch (imgError) {
+          console.warn(`Failed to generate image for "${recipe.title}":`, imgError.message);
+          imageUrl = null;
+        }
         return {
           ...recipe,
           imageUrl,

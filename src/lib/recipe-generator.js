@@ -349,15 +349,27 @@ async function callGeminiAPIMultiple(prompt) {
 }
 
 export async function generateRecipeImage(recipeName) {
-  // Use Pollinations.ai for free AI image generation
-  // Simplify the prompt and use a cleaner URL format
+  // Use Pollinations.ai current unified API: https://gen.pollinations.ai/image/{prompt}
+  // Documentation: https://gen.pollinations.ai/docs
+  // Auth: "Authorization: Bearer sk_..." header (server-side) or ?key=pk_... query param (client-side/Browser).
+  // NEVER expose sk_ keys in client-side code or public URLs.
+  const apiKey = process.env.POLLINATIONS_API_KEY;
   const cleanName = recipeName.replace(/[^a-zA-Z0-9 ]/g, "").trim();
   const prompt = `${cleanName} food dish, professional photography, appetizing, restaurant quality`;
+  const encodedPrompt = encodeURIComponent(prompt);
+  const baseUrl = "https://gen.pollinations.ai/image/" + encodedPrompt;
 
-  // Pollinations.ai free API - generates AI images
-  const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    prompt
-  )}?width=512&height=512&nologo=true`;
+  // For server-side image fetching we would use Authorization header, but the image URL is returned
+  // to the client for embedding. The Pollinations browser-compatible pattern is to pass the app key
+  // (pk_...) as a query parameter so the browser can fetch the image directly.
+  // If a sk_ key is provided we do NOT embed it in the URL — the browser will call the public endpoint
+  // without auth, which is fine for the free tier. If a pk_ app key is available, include it so the
+  // browser request is authenticated.
+  if (apiKey && apiKey.startsWith("pk_")) {
+    return `${baseUrl}?key=${encodeURIComponent(apiKey)}&width=512&height=512`;
+  }
 
-  return imageUrl;
+  // No valid public (pk_) key available — return the unauthenticated URL.
+  // The free tier still works without a key for basic usage.
+  return `${baseUrl}?width=512&height=512`;
 }
