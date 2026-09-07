@@ -142,7 +142,7 @@ export async function generateRecipeByName(recipeName) {
 async function callGeminiAPI(prompt) {
   // Try multiple models in case one is rate-limited
   const models = [
-    "gemini-2.0-flash-lite",
+    "gemini-3.5-flash-lite",
     "gemini-2.5-flash",
     "gemini-2.0-flash",
   ];
@@ -245,7 +245,7 @@ async function callGeminiAPI(prompt) {
 async function callGeminiAPIMultiple(prompt) {
   // Try multiple models in case one is rate-limited
   const models = [
-    "gemini-2.0-flash-lite",
+    "gemini-3.5-flash-lite",
     "gemini-2.5-flash",
     "gemini-2.0-flash",
   ];
