@@ -349,27 +349,26 @@ async function callGeminiAPIMultiple(prompt) {
 }
 
 export async function generateRecipeImage(recipeName) {
-  // Use Pollinations.ai current unified API: https://gen.pollinations.ai/image/{prompt}
-  // Documentation: https://gen.pollinations.ai/docs
-  // Auth: "Authorization: Bearer sk_..." header (server-side) or ?key=pk_... query param (client-side/Browser).
+  // Use Pollinations.ai for AI image generation.
+  // Primary endpoint: https://gen.pollinations.ai/image/{prompt} (requires API key).
+  // Legacy fallback: https://image.pollinations.ai/prompt/{prompt} (works without a key).
+  // Auth: sk_ keys via Authorization: Bearer header (server-side only).
+  //       pk_ app keys via ?key= query param for browser clients.
   // NEVER expose sk_ keys in client-side code or public URLs.
   const apiKey = process.env.POLLINATIONS_API_KEY;
   const cleanName = recipeName.replace(/[^a-zA-Z0-9 ]/g, "").trim();
   const prompt = `${cleanName} food dish, professional photography, appetizing, restaurant quality`;
   const encodedPrompt = encodeURIComponent(prompt);
-  const baseUrl = "https://gen.pollinations.ai/image/" + encodedPrompt;
 
-  // For server-side image fetching we would use Authorization header, but the image URL is returned
-  // to the client for embedding. The Pollinations browser-compatible pattern is to pass the app key
-  // (pk_...) as a query parameter so the browser can fetch the image directly.
-  // If a sk_ key is provided we do NOT embed it in the URL — the browser will call the public endpoint
-  // without auth, which is fine for the free tier. If a pk_ app key is available, include it so the
-  // browser request is authenticated.
+  // If a pk_ app key is available, use the current gen.pollinations.ai endpoint with the key.
+  // pk_ keys are safe to embed in URLs for browser clients.
   if (apiKey && apiKey.startsWith("pk_")) {
-    return `${baseUrl}?key=${encodeURIComponent(apiKey)}&width=512&height=512`;
+    return `https://gen.pollinations.ai/image/${encodedPrompt}?key=${encodeURIComponent(
+      apiKey
+    )}&width=512&height=512`;
   }
 
-  // No valid public (pk_) key available — return the unauthenticated URL.
-  // The free tier still works without a key for basic usage.
-  return `${baseUrl}?width=512&height=512`;
+  // No valid pk_ key available (no key, or sk_ key which must not go in URLs).
+  // Fall back to the legacy image.pollinations.ai endpoint which still works without auth.
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`;
 }
