@@ -46,3 +46,5 @@ prisma/prisma/dev.db
 # Logs
 server.log
 *.log
+
+.vercel
