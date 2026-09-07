@@ -356,19 +356,23 @@ export async function generateRecipeImage(recipeName) {
   //       pk_ app keys via ?key= query param for browser clients.
   // NEVER expose sk_ keys in client-side code or public URLs.
   const apiKey = process.env.POLLINATIONS_API_KEY;
-  const cleanName = recipeName.replace(/[^a-zA-Z0-9 ]/g, "").trim();
-  const prompt = `${cleanName} food dish, professional photography, appetizing, restaurant quality`;
+  const cleanName = recipeName.replace(/[^a-zA-Z0-9 &]/g, "").trim();
+  const prompt = `${cleanName} appetizing food dish, restaurant-style plating, realistic food photography`;
   const encodedPrompt = encodeURIComponent(prompt);
+
+  // Image dimensions: 384x384 is sufficient for recipe card thumbnails and faster to generate.
+  const width = 384;
+  const height = 384;
 
   // If a pk_ app key is available, use the current gen.pollinations.ai endpoint with the key.
   // pk_ keys are safe to embed in URLs for browser clients.
   if (apiKey && apiKey.startsWith("pk_")) {
     return `https://gen.pollinations.ai/image/${encodedPrompt}?key=${encodeURIComponent(
       apiKey
-    )}&width=512&height=512`;
+    )}&width=${width}&height=${height}`;
   }
 
   // No valid pk_ key available (no key, or sk_ key which must not go in URLs).
   // Fall back to the legacy image.pollinations.ai endpoint which still works without auth.
-  return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`;
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${width}&height=${height}&nologo=true`;
 }
