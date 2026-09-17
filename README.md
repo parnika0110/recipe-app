@@ -4,8 +4,6 @@ KhanaKreation is a full-stack recipe application that helps users discover perso
 
 Built with Next.js and React, the application combines recipe generation with authentication, persistent data storage, saved recipes, ratings, and comments in a complete full-stack experience.
 
-Deployed on Vercel
-
 ## Features
 
 ### Recipe Generation
