@@ -4,7 +4,7 @@
 
 ## 📊 Project Status: ✅ COMPLETE
 
-A full-stack, production-quality AI Recipe Generator web application has been successfully built from scratch.
+A full-stack, production-quality AI Personalised Recipe Generator web application has been successfully built from scratch.
 
 ---
 
